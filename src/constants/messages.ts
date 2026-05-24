@@ -14,5 +14,8 @@ export const userMessages = {
   CONFIRM_PASSWORD_IS_REQUIRED: 'Confirm password is required',
   CONFIRM_PASSWORD_MUST_BE_A_STRING: 'Confirm password must be a string',
   CONFIRM_PASSWORD_DOES_NOT_MATCH: 'Confirm password does not match password',
-  DATE_OF_BIRTH_MUST_BE_ISO8601: 'Date of birth must be a valid ISO8601 date'
+  DATE_OF_BIRTH_MUST_BE_ISO8601: 'Date of birth must be a valid ISO8601 date',
+  EMAIL_OR_PASSWORD_INCORRECT: 'Email or password is incorrect',
+  LOGIN_SUCCESS: 'Login success',
+  REGISTER_SUCCESS: 'Register success'
 } as const

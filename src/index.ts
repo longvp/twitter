@@ -9,13 +9,14 @@ const port = 3000
 databaseService.connect()
 
 app.use(express.json())
-app.use(defaultErrorHandler)
 
 app.get('/', (req, res) => {
   res.send('hello')
 })
 
 app.use('/user', usersRouter)
+
+app.use(defaultErrorHandler)
 
 app.listen(port, () => {
   console.log('server is running on port 3000')

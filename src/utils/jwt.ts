@@ -1,5 +1,5 @@
 import { config } from 'dotenv'
-import jwt, { SignOptions } from 'jsonwebtoken'
+import jwt, { SignOptions, VerifyOptions } from 'jsonwebtoken'
 
 config()
 
@@ -20,6 +20,27 @@ export const signToken = ({
         throw reject(err)
       }
       return resolve(token as string)
+    })
+  })
+}
+
+export const verifyToken = ({
+  token,
+  secret = process.env.JWT_SECRET as string,
+  options = {
+    algorithms: ['HS256']
+  }
+}: {
+  token: string
+  secret?: string
+  options?: VerifyOptions
+}) => {
+  return new Promise<string | object>((resolve, reject) => {
+    jwt.verify(token, secret, options, (err, decoded) => {
+      if (err) {
+        throw reject(err)
+      }
+      return resolve(decoded as string | object)
     })
   })
 }

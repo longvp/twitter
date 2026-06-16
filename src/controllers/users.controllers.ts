@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { userMessages } from '~/constants/messages'
-import { RegisterReqBody } from '~/models/requests/User.requests'
+import { LogoutReqBody, RegisterReqBody } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schemas'
 import usersService from '~/services/users.services'
 import { wrapRequestHandler } from '~/utils/handlers'
@@ -18,5 +18,13 @@ export const registerController = wrapRequestHandler(
   async (req: Request<ParamsDictionary, unknown, RegisterReqBody>, res: Response) => {
     const result = await usersService.register(req.body)
     res.json({ message: userMessages.REGISTER_SUCCESS, result })
+  }
+)
+
+export const logoutController = wrapRequestHandler(
+  async (req: Request<ParamsDictionary, unknown, LogoutReqBody>, res: Response) => {
+    const { refresh_token } = req.body
+    const result = await usersService.logout(refresh_token)
+    res.json(result)
   }
 )

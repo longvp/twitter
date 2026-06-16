@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-NetTCPConnection -LocalPort 27017 -ErrorAction SilentlyContinue)",
+      "PowerShell(Start-Service -Name MongoDB)",
+      "PowerShell(Get-Service -Name MongoDB)",
+      "PowerShell(Start-Process powershell -Verb RunAs -ArgumentList '-NoProfile','-Command','Start-Service MongoDB; Start-Sleep 2'; Start-Sleep -Seconds 4; Get-Service MongoDB | Select-Object Name, Status)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 27017 -State Listen -ErrorAction SilentlyContinue)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue)",
+      "PowerShell(npm run dev)"
+    ]
+  }
+}

@@ -5,13 +5,13 @@ config()
 
 export const signToken = ({
   payload,
-  secret = process.env.JWT_SECRET as string,
+  secret,
   options = {
     algorithm: 'HS256'
   }
 }: {
   payload: object | string | Buffer
-  secret?: string
+  secret: string
   options?: SignOptions
 }) => {
   return new Promise<string>((resolve, reject) => {
@@ -26,13 +26,13 @@ export const signToken = ({
 
 export const verifyToken = ({
   token,
-  secret = process.env.JWT_SECRET as string,
+  secret,
   options = {
     algorithms: ['HS256']
   }
 }: {
   token: string
-  secret?: string
+  secret: string
   options?: VerifyOptions
 }) => {
   return new Promise<string | object>((resolve, reject) => {

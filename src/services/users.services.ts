@@ -119,6 +119,80 @@ class UsersService {
     return { access_token, refresh_token }
   }
 
+  private async getOauthGoogleToken(code: string) {
+    const body = {
+      code,
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      grant_type: 'authorization_code',
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI
+    }
+
+    const res = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams(body as Record<string, string>).toString()
+    })
+    const data = (await res.json()) as {
+      access_token: string
+      id_token: string
+      expires_in: number
+      token_type: string
+      scope: string
+    }
+    return data
+  }
+
+  private async getGoogleUserInfo(access_token: string) {
+    const res = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
+    })
+    const data = await res.json()
+    return data
+  }
+
+  async oauthGoogle(code: string) {
+    const { access_token } = await this.getOauthGoogleToken(code)
+    const userInfo = await this.getGoogleUserInfo(access_token)
+    if (!userInfo.verified_email) {
+      throw new ErrorWithStatus({
+        message: userMessages.GMAIL_NOT_VERIFIED,
+        status: httpStatus.UNPROCESSABLE_ENTITY
+      })
+    }
+    // Email đã tồn tại -> đăng nhập
+    const user = await databaseService.users.findOne({ email: userInfo.email })
+    if (user) {
+      const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
+        user_id: user._id.toString(),
+        verify: user.verify
+      })
+      await databaseService.refreshTokens.insertOne(
+        new RefreshToken({
+          _id: new ObjectId(),
+          token: refresh_token,
+          createdAt: new Date(),
+          user_id: user._id
+        })
+      )
+      return { access_token, refresh_token, newUser: 0, verify: user.verify }
+    }
+    // Chưa có -> tạo mới với mật khẩu ngẫu nhiên
+    const password = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    const data = await this.register({
+      email: userInfo.email,
+      name: userInfo.name,
+      date_of_birth: new Date().toISOString(),
+      password,
+      confirm_password: password
+    })
+    return { ...data, newUser: 1, verify: UserVerifyStatus.Unverified }
+  }
+
   async logout(refresh_token: string) {
     await databaseService.refreshTokens.deleteOne({ token: refresh_token })
     return {

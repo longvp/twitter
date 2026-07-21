@@ -3,3 +3,9 @@ dist/
 .env
 *.log
 .DS_Store
+
+# Google OAuth credentials - KHONG duoc commit
+client_secret_*.json
+
+# File nguoi dung upload
+uploads/

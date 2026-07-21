@@ -35,6 +35,13 @@ export const loginController = wrapRequestHandler(
   }
 )
 
+export const oauthGoogleController = wrapRequestHandler(async (req: Request, res: Response) => {
+  const { code } = req.query
+  const result = await usersService.oauthGoogle(code as string)
+  const urlRedirect = `${process.env.CLIENT_REDIRECT_CALLBACK}?access_token=${result.access_token}&refresh_token=${result.refresh_token}&new_user=${result.newUser}&verify=${result.verify}`
+  return res.redirect(urlRedirect)
+})
+
 export const registerController = wrapRequestHandler(
   async (req: Request<ParamsDictionary, unknown, RegisterReqBody>, res: Response) => {
     const result = await usersService.register(req.body)

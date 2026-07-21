@@ -34,6 +34,7 @@ export const userMessages = {
   PASSWORD_RESET_SUCCESS: 'Password reset success',
   GET_ME_SUCCESS: 'Get me success',
   USER_NOT_VERIFIED: 'User is not verified',
+  GMAIL_NOT_VERIFIED: 'Gmail is not verified',
   BIO_MUST_BE_A_STRING: 'Bio must be a string',
   BIO_LENGTH_MUST_BE_LESS_THAN_500: 'Bio length must be less than 500',
   LOCATION_MUST_BE_A_STRING: 'Location must be a string',

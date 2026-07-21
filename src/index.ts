@@ -2,11 +2,14 @@ import express from 'express'
 import usersRouter from './routes/users.routes'
 import databaseService from '~/services/database.service'
 import { defaultErrorHandler } from './middlewares/errors.middlewares'
+import mediaRouter from './routes/media.routes'
+import { initUploadFolder } from './controllers/media.controllers'
 
 const app = express()
-const port = 3000
+const port = 4000
 
 databaseService.connect()
+initUploadFolder()
 
 app.use(express.json())
 
@@ -15,9 +18,10 @@ app.get('/', (req, res) => {
 })
 
 app.use('/user', usersRouter)
+app.use('/media', mediaRouter)
 
 app.use(defaultErrorHandler)
 
 app.listen(port, () => {
-  console.log('server is running on port 3000')
+  console.log(`server is running on port ${port}`)
 })

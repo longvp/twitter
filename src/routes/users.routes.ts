@@ -13,7 +13,8 @@ import {
   getProfileController,
   followController,
   unfollowController,
-  changePasswordController
+  changePasswordController,
+  oauthGoogleController
 } from '~/controllers/users.controllers'
 import {
   accessTokenValidator,
@@ -34,6 +35,7 @@ import {
 const usersRouter = Router()
 
 usersRouter.post('/login', loginValidator, loginController)
+usersRouter.get('/oauth/google', oauthGoogleController)
 usersRouter.post('/register', registerValidator, registerController)
 usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, logoutController)
 usersRouter.post('/verify-email', verifyEmailTokenValidator, verifyEmailController)

@@ -1,43 +1,41 @@
-import { NextFunction } from 'express-serve-static-core'
 import { Request, Response } from 'express'
-import formidable from 'formidable'
-import fs from 'fs'
 import path from 'path'
 import { wrapRequestHandler } from '~/utils/handlers'
+import mediaService from '~/services/media.service'
+import { userMessages } from '~/constants/messages'
+import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/utils/file'
+import httpStatus from '~/constants/httpStatus'
 
-export const UPLOAD_DIR = path.resolve('uploads')
+export const uploadImageController = wrapRequestHandler(async (req: Request, res: Response) => {
+  const result = await mediaService.uploadImage(req)
+  return res.json({
+    result,
+    message: userMessages.UPLOAD_SUCCESS
+  })
+})
 
-// Tạo thư mục uploads nếu chưa tồn tại (formidable v3 không tự tạo)
-export const initUploadFolder = () => {
-  if (!fs.existsSync(UPLOAD_DIR)) {
-    fs.mkdirSync(UPLOAD_DIR, { recursive: true })
-  }
+export const uploadVideoController = wrapRequestHandler(async (req: Request, res: Response) => {
+  const result = await mediaService.uploadVideo(req)
+  return res.json({
+    result,
+    message: userMessages.UPLOAD_SUCCESS
+  })
+})
+
+export const serveImageController = (req: Request, res: Response) => {
+  const name = req.params.name as string
+  return res.sendFile(path.resolve(UPLOAD_IMAGE_DIR, name), (err) => {
+    if (err) {
+      res.status(httpStatus.NOT_FOUND).send('Not found')
+    }
+  })
 }
 
-export const uploadSingleImageController = wrapRequestHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const form = formidable({
-      uploadDir: UPLOAD_DIR,
-      maxFiles: 1,
-      keepExtensions: true,
-      // maxFileSize: 300 * 1024, // 300KB
-      filename: (name, ext, part) => {
-        // Giữ nguyên tên file gốc mà người dùng tải lên
-        return part.originalFilename || `${name}${ext}`
-      },
-      filter: ({ name, mimetype }) => {
-        const valid = name === 'image' && Boolean(mimetype?.includes('image/'))
-        if (!valid) {
-          form.emit('error' as never, new Error('File type is not valid') as never)
-        }
-        return valid
-      }
-    })
-    form.parse(req, (err, fields, files) => {
-      if (err) {
-        return next(err)
-      }
-      return res.json({ message: 'Upload success', files })
-    })
-  }
-)
+export const serveVideoController = (req: Request, res: Response) => {
+  const name = req.params.name as string
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, name), (err) => {
+    if (err) {
+      res.status(httpStatus.NOT_FOUND).send('Not found')
+    }
+  })
+}

@@ -3,10 +3,14 @@ import usersRouter from './routes/users.routes'
 import databaseService from '~/services/database.service'
 import { defaultErrorHandler } from './middlewares/errors.middlewares'
 import mediaRouter from './routes/media.routes'
-import { initUploadFolder } from './controllers/media.controllers'
+import staticRouter from './routes/static.routes'
+import { initUploadFolder } from './utils/file'
+import { config } from 'dotenv'
+
+config()
 
 const app = express()
-const port = 4000
+const port = process.env.PORT || 4000
 
 databaseService.connect()
 initUploadFolder()
@@ -19,6 +23,8 @@ app.get('/', (req, res) => {
 
 app.use('/user', usersRouter)
 app.use('/media', mediaRouter)
+
+app.use('/static', staticRouter)
 
 app.use(defaultErrorHandler)
 

@@ -55,4 +55,5 @@ export const userMessages = {
   OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
   PASSWORD_CHANGED_SUCCESS: 'Password changed success',
   UPLOAD_SUCCESS: 'Upload success',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token success'
 } as const

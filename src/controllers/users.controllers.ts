@@ -11,6 +11,7 @@ import {
   ForgotPasswordReqBody,
   LoginReqBody,
   LogoutReqBody,
+  RefreshTokenReqBody,
   RegisterReqBody,
   ResetPasswordReqBody,
   TokenPayload,
@@ -54,6 +55,23 @@ export const logoutController = wrapRequestHandler(
     const { refresh_token } = req.body
     const result = await usersService.logout(refresh_token)
     return res.json(result)
+  }
+)
+
+export const refreshTokenController = wrapRequestHandler(
+  async (req: Request<ParamsDictionary, unknown, RefreshTokenReqBody>, res: Response) => {
+    const { refresh_token } = req.body
+    const { user_id, verify } = req.decoded_refresh_token as TokenPayload
+    const result = await usersService.refreshToken({
+      user_id,
+      verify,
+      refresh_token
+    })
+
+    return res.json({
+      message: userMessages.REFRESH_TOKEN_SUCCESS,
+      result
+    })
   }
 )
 

@@ -28,7 +28,7 @@ export const handleUploadImage = (req: Request) => {
       return part.originalFilename || `${name}${ext}`
     },
     filter: ({ name, mimetype }) => {
-      const valid = name === 'image' && !!mimetype?.includes('jpeg')
+      const valid = name === 'image' && !!mimetype?.includes('image/')
       if (!valid) {
         form.emit('error' as never, new Error('File type is not valid') as never)
       }
@@ -60,7 +60,7 @@ export const handleUploadVideo = (req: Request) => {
       return part.originalFilename || `${name}${ext}`
     },
     filter: ({ name, mimetype }) => {
-      const valid = name === 'video' && !!mimetype?.includes('mp4') && !!mimetype?.includes('quicktime')
+      const valid = name === 'video' && (!!mimetype?.includes('mp4') || !!mimetype?.includes('quicktime'))
       if (!valid) {
         form.emit('error' as never, new Error('File type is not valid') as never)
       }

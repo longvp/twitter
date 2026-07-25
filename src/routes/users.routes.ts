@@ -14,7 +14,8 @@ import {
   followController,
   unfollowController,
   changePasswordController,
-  oauthGoogleController
+  oauthGoogleController,
+  refreshTokenController
 } from '~/controllers/users.controllers'
 import {
   accessTokenValidator,
@@ -38,6 +39,7 @@ usersRouter.post('/login', loginValidator, loginController)
 usersRouter.get('/oauth/google', oauthGoogleController)
 usersRouter.post('/register', registerValidator, registerController)
 usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, logoutController)
+usersRouter.post('refresh-token', refreshTokenValidator, refreshTokenController)
 usersRouter.post('/verify-email', verifyEmailTokenValidator, verifyEmailController)
 usersRouter.post('/resend-verify-email', accessTokenValidator, resendVerifyEmailValidator, resendVerifyEmailController)
 usersRouter.post('/forgot-password', forgotPasswordValidator, forgotPasswordController)
